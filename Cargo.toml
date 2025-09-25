@@ -1,0 +1,15 @@
+[package]
+name = "array-bench"
+version = "0.1.0"
+edition = "2024"
+authors = ["Nathan Fiedler <nathanfiedler@fastmail.fm>"]
+description = "Run benchmarks on various resizable arrays."
+repository = "https://github.com/nlfiedler/array-bench"
+readme = "README.md"
+license = "MIT"
+
+[dependencies]
+extarray = "1"
+optarray = "1"
+segment-array = "1"
+tzarrays = "1"
