@@ -10,6 +10,7 @@ license = "MIT"
 
 [dependencies]
 extarray = "1"
+hashed-array-tree = "1"
 optarray = "1"
 segment-array = "1"
 tzarrays = "1"

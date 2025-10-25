@@ -2,6 +2,7 @@
 // Copyright (c) 2025 Nathan Fiedler
 //
 use extarray::ExtensibleArray;
+use hashed_array_tree::HashedArrayTree;
 use optarray::OptimalArray as BrodnikArray;
 use segment_array::SegmentArray;
 use std::time::{Duration, Instant};
@@ -32,10 +33,39 @@ fn display_average_times(times: Vec<Times>) {
     let popall: Vec<Duration> = times.iter().map(|t| t.popall).collect();
     let popall = compute_average(popall);
     println!("create: {create}, ordered: {ordered}, pop-all: {popall}",);
+    println!();
 }
 
 fn benchmark_segarray(size: usize) -> Times {
     let mut coll: SegmentArray<usize> = SegmentArray::new();
+    let start = Instant::now();
+    for value in 0..size {
+        coll.push(value);
+    }
+    let create = start.elapsed();
+
+    // test sequenced access for entire collection
+    let start = Instant::now();
+    for (index, value) in coll.iter().enumerate() {
+        assert_eq!(*value, index);
+    }
+    let ordered = start.elapsed();
+
+    // test popping all elements from the array
+    let start = Instant::now();
+    while !coll.is_empty() {
+        coll.pop();
+    }
+    let popall = start.elapsed();
+    Times {
+        create,
+        ordered,
+        popall,
+    }
+}
+
+fn benchmark_hat(size: usize) -> Times {
+    let mut coll: HashedArrayTree<usize> = HashedArrayTree::new();
     let start = Instant::now();
     for value in 0..size {
         coll.push(value);
@@ -214,6 +244,13 @@ fn main() {
     let mut times: Vec<Times> = vec![];
     for _ in 0..7 {
         times.push(benchmark_segarray(size));
+    }
+    display_average_times(times);
+
+    println!("measuring HashedArrayTree...");
+    let mut times: Vec<Times> = vec![];
+    for _ in 0..7 {
+        times.push(benchmark_hat(size));
     }
     display_average_times(times);
 
